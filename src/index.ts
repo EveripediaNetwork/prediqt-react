@@ -1,3 +1,4 @@
-import { TestComponent } from './components/TestComponent/TestComponent';
+import { PrediqtMarketsComponent } from './components/PrediqtMarketsComponent/PrediqtMarketsComponent';
+import { PrediqtMarketCardComponent } from './components/PrediqtMarketCardComponent/PrediqtMarketCardComponent';
 
-export { TestComponent };
+export { PrediqtMarketsComponent, PrediqtMarketCardComponent };

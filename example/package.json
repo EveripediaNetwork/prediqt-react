@@ -2,6 +2,7 @@
   "name": "example",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://EveripediaNetwork.github.io/test-react-component-lib",
   "dependencies": {
     "react": "^16.12.0",
     "react-dom": "^16.12.0",

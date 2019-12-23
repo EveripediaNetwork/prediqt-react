@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import { TestComponent } from './reactComponentLib';
+import { PrediqtMarketsComponent, PrediqtMarketCardComponent } from './reactComponentLib';
 
 const StyledDiv = styled.div`
   padding: 10px;
-  background-color: blue;
+  background-color: #333333;
   color: white;
 `;
 
@@ -13,8 +13,9 @@ class App extends Component {
   render() {
     return (
       <div>
-        <TestComponent text="Styled Component from React library" />
-        <StyledDiv>Example App styled component</StyledDiv>
+          <StyledDiv>Example of PredIQt components</StyledDiv>
+          <PrediqtMarketsComponent text="Market lists" />
+          <PrediqtMarketCardComponent id="4" />
       </div>
     );
   }
