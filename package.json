@@ -30,6 +30,7 @@
     "typescript": "^3.7.2"
   },
   "peerDependencies": {
+    "@everipedia/prediqt-js": "^0.0.16",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "styled-components": "^4.4.1"

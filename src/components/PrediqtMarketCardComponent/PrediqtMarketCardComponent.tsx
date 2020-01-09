@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+
+import { getMarkets } from '../../service';
+
+import { PrediqtMarketCardProps, Market, RelatedMarketsProp } from '../../interfaces';
 
 const BackgroundShadow = styled.div`
   position: absolute;
@@ -21,7 +25,7 @@ const BackgroundImage = styled(BackgroundShadow)`
   transition: transform 0.4s;
 `;
 
-const Card = styled.section`
+const Card = styled.section<RelatedMarketsProp>`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -37,11 +41,10 @@ const Card = styled.section`
   &:hover ${BackgroundImage}, &:focus ${BackgroundImage} {
     transform: scale(1.15);
   }
-  
-   ${({ relatedMarkets }) =>
+  ${({ relatedMarkets }) =>
     relatedMarkets
-        ? "height: 338px;"
-        : `
+      ? 'height: 338px;' 
+     : `
        height: 509px;
        
        @media (max-width: 1124px) {
@@ -49,7 +52,7 @@ const Card = styled.section`
        }`};
 `;
 
-const CardTitle = styled.h4`
+const CardTitle = styled.h4<RelatedMarketsProp>`
   margin: 18px 0;
   font-weight: 500;
   line-height: 24px;
@@ -60,11 +63,9 @@ const CardTitle = styled.h4`
   }
 
   ${({ relatedMarkets, theme }) =>
-    relatedMarkets
-        ? `
+    relatedMarkets ? `
     font: 14px ${theme.fonts.workSans};
-    `
-        : `
+    ` : `
     font: 18px ${theme.fonts.workSans};
     
     @media (max-width: 1124px) {
@@ -73,11 +74,7 @@ const CardTitle = styled.h4`
   `}
 `;
 
-const CardLink = styled(Link)`
-  display: block;
-`;
-
-const WrappedLinkToFilterMarkets = styled(LinkToFilterMarkets)`
+const WrappedLinkToFilterMarkets = styled(LinkToFilterMarkets)<RelatedMarketsProp>`
   display: block;
   max-width: 100%;
   padding: 1px 14px;
@@ -108,7 +105,7 @@ const WrappedLinkToFilterMarkets = styled(LinkToFilterMarkets)`
   `}
 `;
 
-const Category = styled(WrappedLinkToFilterMarkets).attrs({ as: "p" })`
+const Category = styled(WrappedLinkToFilterMarkets).attrs({ as: 'p' })`
   width: fit-content;
   text-transform: uppercase;
 `;
@@ -137,7 +134,7 @@ const NoLine = styled(YesLine)`
   margin-top: 5px;
 `;
 
-const YesNoText = styled.p`
+const YesNoText = styled.p<RelatedMarketsProp>`
   margin-left: 5px;
 
   font-weight: 600;
@@ -157,7 +154,7 @@ const YesNoText = styled.p`
   `}
 `;
 
-const Volume = styled.p`
+const Volume = styled.p<RelatedMarketsProp>`
   display: flex;
   align-items: flex-end;
 
@@ -166,11 +163,10 @@ const Volume = styled.p`
   line-height: 14px;
 
   ${({ relatedMarkets, theme }) =>
-    relatedMarkets
-        ? `
+    relatedMarkets 
+      ? `
       font: 12px ${theme.fonts.workSans};
-    `
-        : `
+    ` : `
       font: 14px ${theme.fonts.workSans};
     
       @media (max-width: 1124px) {
@@ -179,17 +175,16 @@ const Volume = styled.p`
     `}
 `;
 
-const ThumbIcon = styled(Icon)`
+const ThumbIcon = styled(Icon)<RelatedMarketsProp>`
   ${({ relatedMarkets }) =>
-    relatedMarkets
-        ? `
+    relatedMarkets ? `
       width: 12px;
       height: 12px;
     `
         : `
       width: 14px;
       height: 14px;
-    
+
       @media (max-width: 1124px) {
         width: 12px;
         height: 12px;
@@ -216,54 +211,67 @@ const CardIconsWrapper = styled.div`
   width: 100%;
 `;
 
-export interface PrediqtMarketCardProps {
-  id: string;
-}
-
 const isRelatedMarkets = false;
 
-export const PrediqtMarketCardComponent: React.FC<PrediqtMarketCardProps> = ({ id }) => (
-  <Card>
-    <BackgroundImage backgroundURL={image_url} />
-    <BackgroundShadow />
-    {!isWithoutLink && !isRelatedMarkets && (
+export const PrediqtMarketCardComponent: React.FC<PrediqtMarketCardProps> = function({ id }) {
+  const [market, setMarket] = useState<Market | null>(null);
+  const [marketError, setMarketError] = useState<string | null>(null);
+
+  useEffect(function() {
+    (async function() {
+      const result = await getMarkets(1);
+      if (typeof result === 'string') {
+        setMarketError(result);
+      } else {
+        setMarket(result);
+      }
+    })();
+  }, []);
+
+  if (marketError) {
+    return marketError;
+  }
+
+  return (
+    <Card relatedMarkets={isRelatedMarkets}>
+      <BackgroundImage backgroundURL={imageUrl} />
+      {!isWithoutLink && !isRelatedMarkets && (
         <CardIconsWrapper>
           <MarketStateBadge market={market} isCardHovered={isCardHovered} />
-          <VerifiedMark isVerified={market.isVerified} marketId={id} />
-          <HideMarketMark isHidden={market.isHidden} marketId={id} />
         </CardIconsWrapper>
-    )}
-    <CardContent>
-      {isFilterURLParam ? (
-          <Category>{category}</Category>
-      ) : (
-          <object>
-            <WrappedLinkToFilterMarkets param={{ type: "category", value: category }} />
-          </object>
       )}
-      <CardTitle relatedMarkets={isRelatedMarkets}>{cutMarketsCardTitle(title)}</CardTitle>
-      <Divider />
-      <Footer>
-        <FooterLeft>
-          <YesLine>
-            <ThumbIcon name="thumb-up" relatedMarkets={isRelatedMarkets} />
-            <YesNoText relatedMarkets={isRelatedMarkets}>
-              YES{limitOrder?.yesLimitOrderPrice > 0 ? ` – ${limitOrder?.yesLimitOrderPrice}x` : ""}
-            </YesNoText>
-          </YesLine>
-          <NoLine>
-            <ThumbIcon name="thumb-down" relatedMarkets={isRelatedMarkets} />
-            <YesNoText relatedMarkets={isRelatedMarkets}>
-              NO{limitOrder?.noLimitOrderPrice > 0 ? ` – ${limitOrder?.noLimitOrderPrice}x` : ""}
-            </YesNoText>
-          </NoLine>
-        </FooterLeft>
-        <Volume relatedMarkets={isRelatedMarkets}>
-          <VolumeText>Volume</VolumeText>
-          {volume.abbreviatedEos} EOS
-        </Volume>
-      </Footer>
-    </CardContent>
-    {id}
-  </Card>
-);
+      <CardContent>
+        {isFilterURLParam ? (
+          <Category>{category}</Category>
+        ) : (
+          <object>
+            <WrappedLinkToFilterMarkets param={{type: "category", value: category}}/>
+          </object>
+        )}
+        <CardTitle relatedMarkets={isRelatedMarkets}>{cutMarketsCardTitle(title)}</CardTitle>
+        <Divider/>
+        <Footer>
+          <FooterLeft>
+            <YesLine>
+              <ThumbIcon name="thumb-up" relatedMarkets={isRelatedMarkets} />
+              <YesNoText relatedMarkets={isRelatedMarkets}>
+                YES{limitOrder?.yesLimitOrderPrice > 0 ? ` – ${limitOrder?.yesLimitOrderPrice}x` : ''}
+              </YesNoText>
+            </YesLine>
+            <NoLine>
+              <ThumbIcon name="thumb-down" relatedMarkets={isRelatedMarkets} />
+              <YesNoText relatedMarkets={isRelatedMarkets}>
+                NO{limitOrder?.noLimitOrderPrice > 0 ? ` – ${limitOrder?.noLimitOrderPrice}x` : ''}
+              </YesNoText>
+            </NoLine>
+          </FooterLeft>
+          <Volume relatedMarkets={isRelatedMarkets}>
+            <VolumeText>Volume</VolumeText>
+            {volume.abbreviatedEos} EOS
+          </Volume>
+        </Footer>
+      </CardContent>
+      {id}
+    </Card>
+  );
+};

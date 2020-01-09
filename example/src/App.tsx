@@ -13,9 +13,9 @@ class App extends Component {
   render() {
     return (
       <div>
-          <StyledDiv>Example of PredIQt components</StyledDiv>
-          <PrediqtMarketsComponent text="Market lists" />
-          <PrediqtMarketCardComponent id="4" />
+        <StyledDiv>Example of PredIQt components</StyledDiv>
+        <PrediqtMarketsComponent text="Market lists" />
+        <PrediqtMarketCardComponent id="4" />
       </div>
     );
   }

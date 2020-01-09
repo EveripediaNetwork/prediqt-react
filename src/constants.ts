@@ -1,0 +1,1 @@
+export const EOS_PRECISION = 10000;
