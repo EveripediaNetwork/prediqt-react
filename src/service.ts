@@ -2,37 +2,29 @@ import { PrediqtGraph } from '@everipedia/prediqt-js';
 
 import { dateToSeconds, abbreviateNumber, generateYesNoButtons, processOrderBook } from './utils';
 
+import { Market } from './interfaces';
+
 import { EOS_PRECISION } from './constants';
 
 const apiGraph = new PrediqtGraph('https://prediqt-api-mainnet.azurewebsites.net/graphql');
 
-export async function getMarkets(limit: number, category?: string) {
-  let filters = null;
-  if (category) {
-    filters = {
-      paramName: 'category',
-      paramValue: category,
-    };
-  }
-
+export async function getMarket(marketId: string): Promise<Market | string> {
   try {
-    const [
-      {
-        id,
-        creator,
-        resolver,
-        resolution,
-        resolution_markettime: resolutionMarketTime,
-        ipfs,
-        end_time: endTime,
-        is_active: isActive,
-        is_resolved: isResolved,
-        is_verified: isVerified,
-        is_hidden: isHidden,
-        order_book: orderBook,
-        volume,
-      },
-    ] = await apiGraph.getMarkets(true, 0, limit, 'true', 'prediqtbottt', filters);
+    const {
+      id,
+      creator,
+      resolver,
+      resolution,
+      resolution_markettime: resolutionMarketTime,
+      ipfs: { hash, title, description, image_url, category, tags, resolution_description },
+      end_time: endTime,
+      is_active: isActive,
+      is_resolved: isResolved,
+      is_verified: isVerified,
+      is_hidden: isHidden,
+      order_book: orderBook,
+      volume,
+    } = await apiGraph.getMarket(Number(marketId));
 
     return {
       id,
@@ -40,7 +32,15 @@ export async function getMarkets(limit: number, category?: string) {
       resolver: resolver.name,
       resolution,
       resolutionMarketTime: dateToSeconds(resolutionMarketTime),
-      ipfs,
+      ipfs: {
+        hash,
+        title,
+        description,
+        imageUrl: image_url,
+        category,
+        tags,
+        resolutionDescription: resolution_description,
+      },
       endOfMarketTime: dateToSeconds(endTime),
       isActive,
       isResolved,

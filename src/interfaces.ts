@@ -8,6 +8,18 @@ export interface RelatedMarketsProp {
   relatedMarkets: boolean;
 }
 
+export interface BackgroundImageProps {
+  backgroundURL: string;
+}
+
+export interface LinkToFilterMarketsProps {
+  param: {
+    type: string;
+    value: string;
+  };
+  className?: string;
+}
+
 interface Volume {
   abbreviatedEos: string;
   eos: number;
@@ -39,25 +51,40 @@ export interface ProcessedOrderBook {
   no: Order[];
 }
 
+export interface LimitOrder {
+  yesLimitOrderPrice: number;
+  noLimitOrderPrice: number;
+}
+
+export interface Ipfs {
+  hash: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  category: string;
+  tags: string[];
+  resolutionDescription: string;
+}
+
 export interface Market {
   id: number;
   creator: string;
   resolver: string;
   resolution: string;
   resolutionMarketTime: number;
-  ipfs: object;
+  ipfs: Ipfs;
   endOfMarketTime: number;
   isActive: boolean;
   isResolved: boolean;
   isVerified: boolean;
   isHidden: boolean;
-  limitOrder: object;
+  limitOrder: LimitOrder;
   volume: Volume;
 }
 
 //////// MarketStateBadge
 
-export interface MarketStateBadge {
+export interface MarketStateBadgeProps {
   market: Market;
   isCardHovered: boolean;
 }

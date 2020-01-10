@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { getMarkets } from '../../service';
+import { getMarket } from '../../service';
+import { cutMarketsCardTitle } from '../../utils';
 
-import { PrediqtMarketCardProps, Market, RelatedMarketsProp } from '../../interfaces';
+import { PrediqtMarketCardProps, Market, RelatedMarketsProp, BackgroundImageProps } from '../../interfaces';
+
+import { MarketStateBadge } from './MarketStateBadge';
+import { LinkToFilterMarkets } from './LinkToFilterMarkets';
 
 const BackgroundShadow = styled.div`
   position: absolute;
@@ -14,7 +18,7 @@ const BackgroundShadow = styled.div`
   background-image: linear-gradient(to top, rgba(0, 0, 0, 0.7) 35%, 55%, transparent);
 `;
 
-const BackgroundImage = styled(BackgroundShadow)`
+const BackgroundImage = styled(BackgroundShadow)<BackgroundImageProps>`
   position: absolute;
   top: 0;
   left: 0;
@@ -23,6 +27,9 @@ const BackgroundImage = styled(BackgroundShadow)`
   background-image: none;
   backface-visibility: hidden;
   transition: transform 0.4s;
+
+  ${({ backgroundURL }) =>
+    backgroundURL ? `background: url('${backgroundURL}') center no-repeat; background-size: cover;` : ''}
 `;
 
 const Card = styled.section<RelatedMarketsProp>`
@@ -43,8 +50,8 @@ const Card = styled.section<RelatedMarketsProp>`
   }
   ${({ relatedMarkets }) =>
     relatedMarkets
-      ? 'height: 338px;' 
-     : `
+      ? 'height: 338px;'
+      : `
        height: 509px;
        
        @media (max-width: 1124px) {
@@ -63,9 +70,11 @@ const CardTitle = styled.h4<RelatedMarketsProp>`
   }
 
   ${({ relatedMarkets, theme }) =>
-    relatedMarkets ? `
+    relatedMarkets
+      ? `
     font: 14px ${theme.fonts.workSans};
-    ` : `
+    `
+      : `
     font: 18px ${theme.fonts.workSans};
     
     @media (max-width: 1124px) {
@@ -94,20 +103,15 @@ const WrappedLinkToFilterMarkets = styled(LinkToFilterMarkets)<RelatedMarketsPro
 
   ${({ relatedMarkets, theme }) =>
     relatedMarkets
-        ? `
+      ? `
     font: 12px ${theme.fonts.workSans};`
-        : `
+      : `
     font: 14px ${theme.fonts.workSans};
     
     @media (max-width: 1124px) {
       font-size: 12px;
     }
   `}
-`;
-
-const Category = styled(WrappedLinkToFilterMarkets).attrs({ as: 'p' })`
-  width: fit-content;
-  text-transform: uppercase;
 `;
 
 const Divider = styled.div`
@@ -142,10 +146,10 @@ const YesNoText = styled.p<RelatedMarketsProp>`
 
   ${({ relatedMarkets }) =>
     relatedMarkets
-        ? `
+      ? `
       font-size: 12px;
     `
-        : `
+      : `
       font-size: 14px;
   
       @media (max-width: 1124px) {
@@ -163,10 +167,11 @@ const Volume = styled.p<RelatedMarketsProp>`
   line-height: 14px;
 
   ${({ relatedMarkets, theme }) =>
-    relatedMarkets 
+    relatedMarkets
       ? `
       font: 12px ${theme.fonts.workSans};
-    ` : `
+    `
+      : `
       font: 14px ${theme.fonts.workSans};
     
       @media (max-width: 1124px) {
@@ -177,11 +182,12 @@ const Volume = styled.p<RelatedMarketsProp>`
 
 const ThumbIcon = styled(Icon)<RelatedMarketsProp>`
   ${({ relatedMarkets }) =>
-    relatedMarkets ? `
+    relatedMarkets
+      ? `
       width: 12px;
       height: 12px;
     `
-        : `
+      : `
       width: 14px;
       height: 14px;
 
@@ -216,10 +222,11 @@ const isRelatedMarkets = false;
 export const PrediqtMarketCardComponent: React.FC<PrediqtMarketCardProps> = function({ id }) {
   const [market, setMarket] = useState<Market | null>(null);
   const [marketError, setMarketError] = useState<string | null>(null);
+  const [isCardHovered, toggleCardHovered] = useState<boolean>(false);
 
   useEffect(function() {
     (async function() {
-      const result = await getMarkets(1);
+      const result = await getMarket(id);
       if (typeof result === 'string') {
         setMarketError(result);
       } else {
@@ -228,40 +235,47 @@ export const PrediqtMarketCardComponent: React.FC<PrediqtMarketCardProps> = func
     })();
   }, []);
 
-  if (marketError) {
+  function setCardHovered() {
+    toggleCardHovered(prevCardHovered => !prevCardHovered);
+  }
+
+  if (!market || marketError) {
     return marketError;
   }
 
+  const { volume, limitOrder, ipfs } = market;
+  const { imageUrl, title, category } = ipfs;
+
   return (
-    <Card relatedMarkets={isRelatedMarkets}>
+    <Card
+      relatedMarkets={isRelatedMarkets}
+      onMouseEnter={setCardHovered}
+      onMouseLeave={setCardHovered}
+      onFocus={setCardHovered}
+      onBlur={setCardHovered}
+    >
       <BackgroundImage backgroundURL={imageUrl} />
-      {!isWithoutLink && !isRelatedMarkets && (
-        <CardIconsWrapper>
-          <MarketStateBadge market={market} isCardHovered={isCardHovered} />
-        </CardIconsWrapper>
-      )}
+      <CardIconsWrapper>
+        <MarketStateBadge market={market} isCardHovered={isCardHovered} />
+      </CardIconsWrapper>
       <CardContent>
-        {isFilterURLParam ? (
-          <Category>{category}</Category>
-        ) : (
-          <object>
-            <WrappedLinkToFilterMarkets param={{type: "category", value: category}}/>
-          </object>
-        )}
+        <object>
+          <WrappedLinkToFilterMarkets relatedMarkets={isRelatedMarkets} param={{ type: 'category', value: category }} />
+        </object>
         <CardTitle relatedMarkets={isRelatedMarkets}>{cutMarketsCardTitle(title)}</CardTitle>
-        <Divider/>
+        <Divider />
         <Footer>
           <FooterLeft>
             <YesLine>
               <ThumbIcon name="thumb-up" relatedMarkets={isRelatedMarkets} />
               <YesNoText relatedMarkets={isRelatedMarkets}>
-                YES{limitOrder?.yesLimitOrderPrice > 0 ? ` – ${limitOrder?.yesLimitOrderPrice}x` : ''}
+                YES{limitOrder.yesLimitOrderPrice > 0 ? ` – ${limitOrder.yesLimitOrderPrice}x` : ''}
               </YesNoText>
             </YesLine>
             <NoLine>
               <ThumbIcon name="thumb-down" relatedMarkets={isRelatedMarkets} />
               <YesNoText relatedMarkets={isRelatedMarkets}>
-                NO{limitOrder?.noLimitOrderPrice > 0 ? ` – ${limitOrder?.noLimitOrderPrice}x` : ''}
+                NO{limitOrder.noLimitOrderPrice > 0 ? ` – ${limitOrder.noLimitOrderPrice}x` : ''}
               </YesNoText>
             </NoLine>
           </FooterLeft>

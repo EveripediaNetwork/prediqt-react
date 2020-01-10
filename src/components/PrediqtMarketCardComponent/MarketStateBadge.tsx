@@ -1,14 +1,13 @@
 import React from 'react';
 import format from 'date-fns/format';
 import styled from 'styled-components';
-import is from 'styled-is';
 
 import Icon from '../../components/icon';
-import { checkMarketMatured, checkMarketInvalid } from '../../utils/functions';
+import { checkMarketMatured, checkMarketInvalid } from '../../utils';
 
-import { CONTENT_MAX_WIDTH } from '../../constants/common';
+import { CONTENT_MAX_WIDTH } from '../../constants';
 
-import { MarketStateBadge, BadgeProps } from '../../interfaces';
+import { MarketStateBadgeProps, BadgeProps } from '../../interfaces';
 
 const Title = styled.p`
   display: none;
@@ -38,7 +37,9 @@ const Badge = styled.div<BadgeProps>`
     height: 30px;
   }
 
-  ${is('isHovered')`
+  ${({ isHovered }) =>
+    isHovered &&
+    `
     width: auto;
     border-radius: 16px;
     padding: 0 8px;
@@ -78,7 +79,7 @@ const BadgeIcon = styled(Icon)`
   }
 `;
 
-export const MarketStateBadge: React.FC<MarketStateBadge> = function({ market, isCardHovered }) {
+export const MarketStateBadge: React.FC<MarketStateBadgeProps> = function({ market, isCardHovered }) {
   let Wrapper = Badge;
   let title;
   let badgeIconName;
