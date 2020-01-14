@@ -12,7 +12,7 @@
   "devDependencies": {
     "@types/react": "^16.9.13",
     "@types/react-dom": "^16.9.4",
-    "@types/styled-components": "^4.4.0",
+    "@types/styled-components": "^4.4.2",
     "@typescript-eslint/eslint-plugin": "^2.9.0",
     "@typescript-eslint/parser": "^2.9.0",
     "concurrently": "^5.0.0",
@@ -30,23 +30,26 @@
     "typescript": "^3.7.2"
   },
   "peerDependencies": {
-    "@everipedia/prediqt-js": "^0.0.16",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "styled-components": "^4.4.1"
+    "@everipedia/prediqt-js": "^0.0.17",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "styled-components": "^4.4.1",
+    "styled-normalize": "^8.0.6"
   },
   "scripts": {
     "build": "rollup -c",
     "build-watch": "rollup -c -w",
-    "prepublishOnly": "npm run build",
-    "postinstall": "install-peers -f && cd example && npm i",
-    "start-example": "cd example && npm start",
-    "deploy-example": "cd example && npm run deploy",
-    "dev": "concurrently --kill-others \"npm run build-watch\" \"npm run start-example\"",
+    "prepublishOnly": "yarn build",
+    "postinstall": "rm -rf node_modules/@types/react-native && install-peers -f && cd example && yarn",
+    "start-example": "cd example && yarn start",
+    "deploy-example": "cd example && yarn deploy",
+    "dev": "concurrently --kill-others \"yarn build-watch\" \"yarn start-example\"",
     "test": "ts-node test/test.ts",
-    "pretest": "npm run build",
+    "pretest": "yarn build",
     "test:lint": "eslint ./src/**/*.ts ./src/**/*.tsx ./example/src/**/*.ts ./example/src/**/*.tsx",
-    "test:lint:fix": "npm run test:lint -- --fix"
+    "test:lint:fix": "yarn test:lint -- --fix",
+    "icons": "svgo --config=.svgo.yml ./src/assets/icons/*.svg && svg-sprite --config sprite.config.json src/assets/icons/*.svg && npx @svgr/cli --no-svgo < src/assets/sprite.svg > src/Sprite.js",
+    "icons:windows": "svgo --config=.svgo.yml ./src/assets/icons && svg-sprite --config sprite.config.json src/assets/icons/*.svg && npx @svgr/cli --no-svgo < src/assets/sprite.svg > src/Sprite.js"
   },
   "files": [
     "dist"

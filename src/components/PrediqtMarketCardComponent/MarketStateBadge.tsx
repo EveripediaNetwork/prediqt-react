@@ -2,12 +2,13 @@ import React from 'react';
 import format from 'date-fns/format';
 import styled from 'styled-components';
 
-import Icon from '../../components/icon';
 import { checkMarketMatured, checkMarketInvalid } from '../../utils';
 
-import { CONTENT_MAX_WIDTH } from '../../constants';
-
 import { MarketStateBadgeProps, BadgeProps } from '../../interfaces';
+
+import { Icon } from '../icons/Icon';
+
+import { CONTENT_MAX_WIDTH } from '../../constants';
 
 const Title = styled.p`
   display: none;
@@ -105,11 +106,11 @@ export const MarketStateBadge: React.FC<MarketStateBadgeProps> = function({ mark
       badgeIconName = 'watch';
       break;
   }
-
+  console.log(badgeIconName);
   return (
     <Wrapper isHovered={isCardHovered}>
       <Title>{title}</Title>
-      <BadgeIcon name={badgeIconName} />
+      <BadgeIcon />
     </Wrapper>
   );
 };

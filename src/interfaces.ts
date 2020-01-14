@@ -1,11 +1,8 @@
 import { Nullable } from './types';
-import { OrderTypes } from './enums';
+import { OrderTypes, OrderTypesUppercase } from './enums';
 
-export interface PrediqtMarketCardProps {
+export interface MarketCardProps {
   id: string;
-}
-export interface RelatedMarketsProp {
-  relatedMarkets: boolean;
 }
 
 export interface BackgroundImageProps {
@@ -18,6 +15,16 @@ export interface LinkToFilterMarketsProps {
     value: string;
   };
   className?: string;
+}
+
+export interface IconProps {
+  size?: number | string;
+  height?: number | string;
+  width?: number | string;
+}
+
+export interface RelatedMarketsProp {
+  relatedMarkets: boolean;
 }
 
 interface Volume {
@@ -42,13 +49,13 @@ export interface OrderBook {
   currency: string;
   type: string;
   quantity: number;
-  symbol: OrderTypes;
+  symbol: OrderTypesUppercase;
   timestamp: Date;
 }
 
 export interface ProcessedOrderBook {
-  yes: Order[];
-  no: Order[];
+  [OrderTypes.Yes]: Order[];
+  [OrderTypes.No]: Order[];
 }
 
 export interface LimitOrder {

@@ -4,7 +4,9 @@ import styled from 'styled-components';
 import { getMarket } from '../../service';
 import { cutMarketsCardTitle } from '../../utils';
 
-import { PrediqtMarketCardProps, Market, RelatedMarketsProp, BackgroundImageProps } from '../../interfaces';
+import { MarketCardProps, Market, RelatedMarketsProp, BackgroundImageProps } from '../../interfaces';
+
+import { Icon } from '../icons/Icon';
 
 import { MarketStateBadge } from './MarketStateBadge';
 import { LinkToFilterMarkets } from './LinkToFilterMarkets';
@@ -217,21 +219,29 @@ const CardIconsWrapper = styled.div`
   width: 100%;
 `;
 
+const MarketError = styled.p`
+  font-weight: 500;
+  color: #d00020;
+`;
+
 const isRelatedMarkets = false;
 
-export const PrediqtMarketCardComponent: React.FC<PrediqtMarketCardProps> = function({ id }) {
+export const MarketCard: React.FC<MarketCardProps> = function({ id }) {
   const [market, setMarket] = useState<Market | null>(null);
   const [marketError, setMarketError] = useState<string | null>(null);
+  const [isMarketLoading, toggleMarketLoading] = useState<boolean>(false);
   const [isCardHovered, toggleCardHovered] = useState<boolean>(false);
 
   useEffect(function() {
     (async function() {
+      toggleMarketLoading(prevMarketLoading => !prevMarketLoading);
       const result = await getMarket(id);
       if (typeof result === 'string') {
         setMarketError(result);
       } else {
         setMarket(result);
       }
+      toggleMarketLoading(prevMarketLoading => !prevMarketLoading);
     })();
   }, []);
 
@@ -239,8 +249,15 @@ export const PrediqtMarketCardComponent: React.FC<PrediqtMarketCardProps> = func
     toggleCardHovered(prevCardHovered => !prevCardHovered);
   }
 
-  if (!market || marketError) {
-    return marketError;
+  if (isMarketLoading) {
+    // TODO replace with loader
+    return <p>Loading...</p>;
+  }
+  if (marketError) {
+    return <MarketError>marketError</MarketError>;
+  }
+  if (!market) {
+    return null;
   }
 
   const { volume, limitOrder, ipfs } = market;
@@ -267,13 +284,13 @@ export const PrediqtMarketCardComponent: React.FC<PrediqtMarketCardProps> = func
         <Footer>
           <FooterLeft>
             <YesLine>
-              <ThumbIcon name="thumb-up" relatedMarkets={isRelatedMarkets} />
+              <ThumbIcon relatedMarkets={isRelatedMarkets} />
               <YesNoText relatedMarkets={isRelatedMarkets}>
                 YES{limitOrder.yesLimitOrderPrice > 0 ? ` – ${limitOrder.yesLimitOrderPrice}x` : ''}
               </YesNoText>
             </YesLine>
             <NoLine>
-              <ThumbIcon name="thumb-down" relatedMarkets={isRelatedMarkets} />
+              <ThumbIcon relatedMarkets={isRelatedMarkets} />
               <YesNoText relatedMarkets={isRelatedMarkets}>
                 NO{limitOrder.noLimitOrderPrice > 0 ? ` – ${limitOrder.noLimitOrderPrice}x` : ''}
               </YesNoText>

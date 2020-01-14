@@ -21,7 +21,7 @@ module.exports = {
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 0,
-    'react/prop-types': 0,
+    'react/prop-types': 0
   },
   settings: {
     react: {
