@@ -6,7 +6,7 @@ import { checkMarketMatured, checkMarketInvalid } from '../../utils';
 
 import { MarketStateBadgeProps, BadgeProps } from '../../interfaces';
 
-import { Icon } from '../icons/Icon';
+import { ThumbDownIcon } from '../icons';
 
 import { CONTENT_MAX_WIDTH } from '../../constants';
 
@@ -69,7 +69,7 @@ const OpenedBadge = styled(Badge)`
   }
 `;
 
-const BadgeIcon = styled(Icon)`
+const BadgeIcon = styled(ThumbDownIcon)`
   width: 16px;
   height: 16px;
   color: #ffffff;

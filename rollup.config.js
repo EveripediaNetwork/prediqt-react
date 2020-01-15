@@ -1,4 +1,6 @@
 import typescript from 'rollup-plugin-typescript2';
+import { terser } from 'rollup-plugin-terser';
+
 import pkg from './package.json';
 
 export default [
@@ -11,10 +13,10 @@ export default [
       }),
     ],
     output: [
-      { file: pkg.main, format: 'cjs' },
+      { file: pkg.main, format: 'esm', plugins: [terser()] },
       { file: pkg.module, format: 'esm' },
       {
-        file: 'example/src/reactComponentLib/index.ts',
+        file: 'example/src/reactComponentLib/index.js',
         format: 'es',
         banner: '/* eslint-disable */',
       },

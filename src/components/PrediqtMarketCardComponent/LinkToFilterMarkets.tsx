@@ -3,6 +3,8 @@ import styled from 'styled-components';
 
 import { LinkToFilterMarketsProps } from '../../interfaces';
 
+import { PREDIQT_SITE_URL } from '../../constants';
+
 const Wrapper = styled.a`
   display: flex;
   width: fit-content;
@@ -14,6 +16,7 @@ const Wrapper = styled.a`
   letter-spacing: 0.2px;
   text-transform: uppercase;
   transition: 0.3s color, 0.3s border-color;
+  text-decoration: none;
 
   ${({ theme }) => `
     font: 10px ${theme.fonts.workSans};
@@ -29,7 +32,7 @@ const Wrapper = styled.a`
 
 export const LinkToFilterMarkets: React.FC<LinkToFilterMarketsProps> = function({ param, className }) {
   const { type, value } = param;
-  const url = `https://prediqt.everipedia.org/markets/${type}/${encodeURI(value.toLowerCase())}`;
+  const url = `${PREDIQT_SITE_URL}markets/${type}/${encodeURI(value.toLowerCase())}`;
 
   return (
     <Wrapper href={url} className={className}>

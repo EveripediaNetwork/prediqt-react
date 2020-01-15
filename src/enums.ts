@@ -1,9 +1,9 @@
-export declare enum OrderTypes {
+export enum OrderTypes {
   Yes = 'yes',
   No = 'no',
 }
 
-export declare enum OrderTypesUppercase {
+export enum OrderTypesUppercase {
   Yes = 'YES',
   No = 'NO',
 }

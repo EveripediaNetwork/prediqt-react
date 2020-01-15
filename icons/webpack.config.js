@@ -2,7 +2,7 @@ const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
-  entry: { main: './src/index.ts' },
+  entry: { main: './src/index.js' },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'CardWrapper.tsx.ts.js',

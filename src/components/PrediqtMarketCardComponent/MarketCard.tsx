@@ -1,15 +1,50 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { getMarket } from '../../service';
 import { cutMarketsCardTitle } from '../../utils';
 
 import { MarketCardProps, Market, RelatedMarketsProp, BackgroundImageProps } from '../../interfaces';
 
-import { Icon } from '../icons/Icon';
-
+import { ThumbDownIcon, ThumbUpIcon } from '../icons';
 import { MarketStateBadge } from './MarketStateBadge';
 import { LinkToFilterMarkets } from './LinkToFilterMarkets';
+
+import { PREDIQT_SITE_URL } from '../../constants';
+
+const globalStyles = css`
+  &,
+  & * {
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Work+Sans:400,500,600&display=swap');
+
+    ${({ theme }) => `      
+    font-family: ${theme.fonts.openSans}; 
+  `}
+  }
+
+  &,
+  & *,
+  & *::after,
+  & *::before {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    line-height: normal;
+  }
+
+  & div,
+  & p,
+  & section,
+  & article {
+    outline: none;
+  }
+`;
+
+const CardLink = styled.a`
+  ${globalStyles};
+
+  text-decoration: none;
+`;
 
 const BackgroundShadow = styled.div`
   position: absolute;
@@ -34,7 +69,7 @@ const BackgroundImage = styled(BackgroundShadow)<BackgroundImageProps>`
     backgroundURL ? `background: url('${backgroundURL}') center no-repeat; background-size: cover;` : ''}
 `;
 
-const Card = styled.section<RelatedMarketsProp>`
+const Card = styled.article<RelatedMarketsProp>`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -116,10 +151,11 @@ const WrappedLinkToFilterMarkets = styled(LinkToFilterMarkets)<RelatedMarketsPro
   `}
 `;
 
-const Divider = styled.div`
+const Divider = styled.hr`
   width: 100%;
   height: 1px;
   background-color: rgba(255, 255, 255, 0.25);
+  border: 0;
 `;
 
 const Footer = styled.div`
@@ -182,13 +218,13 @@ const Volume = styled.p<RelatedMarketsProp>`
     `}
 `;
 
-const ThumbIcon = styled(Icon)<RelatedMarketsProp>`
+const ThumbIconStyles = css<RelatedMarketsProp>`
   ${({ relatedMarkets }) =>
     relatedMarkets
       ? `
       width: 12px;
       height: 12px;
-    `
+      `
       : `
       width: 14px;
       height: 14px;
@@ -198,6 +234,14 @@ const ThumbIcon = styled(Icon)<RelatedMarketsProp>`
         height: 12px;
       }
   `}
+`;
+
+const ThumbDown = styled(ThumbDownIcon)`
+  ${ThumbIconStyles}
+`;
+
+const ThumbUp = styled(ThumbUpIcon)`
+  ${ThumbIconStyles}
 `;
 
 const CardContent = styled.div`
@@ -264,45 +308,50 @@ export const MarketCard: React.FC<MarketCardProps> = function({ id }) {
   const { imageUrl, title, category } = ipfs;
 
   return (
-    <Card
-      relatedMarkets={isRelatedMarkets}
-      onMouseEnter={setCardHovered}
-      onMouseLeave={setCardHovered}
-      onFocus={setCardHovered}
-      onBlur={setCardHovered}
-    >
-      <BackgroundImage backgroundURL={imageUrl} />
-      <CardIconsWrapper>
-        <MarketStateBadge market={market} isCardHovered={isCardHovered} />
-      </CardIconsWrapper>
-      <CardContent>
-        <object>
-          <WrappedLinkToFilterMarkets relatedMarkets={isRelatedMarkets} param={{ type: 'category', value: category }} />
-        </object>
-        <CardTitle relatedMarkets={isRelatedMarkets}>{cutMarketsCardTitle(title)}</CardTitle>
-        <Divider />
-        <Footer>
-          <FooterLeft>
-            <YesLine>
-              <ThumbIcon relatedMarkets={isRelatedMarkets} />
-              <YesNoText relatedMarkets={isRelatedMarkets}>
-                YES{limitOrder.yesLimitOrderPrice > 0 ? ` – ${limitOrder.yesLimitOrderPrice}x` : ''}
-              </YesNoText>
-            </YesLine>
-            <NoLine>
-              <ThumbIcon relatedMarkets={isRelatedMarkets} />
-              <YesNoText relatedMarkets={isRelatedMarkets}>
-                NO{limitOrder.noLimitOrderPrice > 0 ? ` – ${limitOrder.noLimitOrderPrice}x` : ''}
-              </YesNoText>
-            </NoLine>
-          </FooterLeft>
-          <Volume relatedMarkets={isRelatedMarkets}>
-            <VolumeText>Volume</VolumeText>
-            {volume.abbreviatedEos} EOS
-          </Volume>
-        </Footer>
-      </CardContent>
-      {id}
-    </Card>
+    <CardLink href={`${PREDIQT_SITE_URL}market/${id}`} target="_blank">
+      <Card
+        relatedMarkets={isRelatedMarkets}
+        onMouseEnter={setCardHovered}
+        onMouseLeave={setCardHovered}
+        onFocus={setCardHovered}
+        onBlur={setCardHovered}
+      >
+        <BackgroundImage backgroundURL={imageUrl} />
+        <CardIconsWrapper>
+          <MarketStateBadge market={market} isCardHovered={isCardHovered} />
+        </CardIconsWrapper>
+        <CardContent>
+          <object>
+            <WrappedLinkToFilterMarkets
+              relatedMarkets={isRelatedMarkets}
+              param={{ type: 'category', value: category }}
+            />
+          </object>
+          <CardTitle relatedMarkets={isRelatedMarkets}>{cutMarketsCardTitle(title)}</CardTitle>
+          <Divider />
+          <Footer>
+            <FooterLeft>
+              <YesLine>
+                <ThumbDown relatedMarkets={isRelatedMarkets} />
+                <YesNoText relatedMarkets={isRelatedMarkets}>
+                  YES{limitOrder.yesLimitOrderPrice > 0 ? ` – ${limitOrder.yesLimitOrderPrice}x` : ''}
+                </YesNoText>
+              </YesLine>
+              <NoLine>
+                <ThumbUp relatedMarkets={isRelatedMarkets} />
+                <YesNoText relatedMarkets={isRelatedMarkets}>
+                  NO{limitOrder.noLimitOrderPrice > 0 ? ` – ${limitOrder.noLimitOrderPrice}x` : ''}
+                </YesNoText>
+              </NoLine>
+            </FooterLeft>
+            <Volume relatedMarkets={isRelatedMarkets}>
+              <VolumeText>Volume</VolumeText>
+              {volume.abbreviatedEos} EOS
+            </Volume>
+          </Footer>
+        </CardContent>
+        {id}
+      </Card>
+    </CardLink>
   );
 };
