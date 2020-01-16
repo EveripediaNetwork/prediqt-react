@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import { PrediqtMarketsComponent, PrediqtMarketCardComponent } from './reactComponentLib';
+import { CardWrapper } from './reactComponentLib';
 
 const StyledDiv = styled.div`
   padding: 10px;
@@ -13,9 +13,8 @@ class App extends Component {
   render() {
     return (
       <div>
-          <StyledDiv>Example of PredIQt components</StyledDiv>
-          <PrediqtMarketsComponent text="Market lists" />
-          <PrediqtMarketCardComponent id="4" />
+        <StyledDiv>Example of PredIQt components</StyledDiv>
+        <CardWrapper id="12" />
       </div>
     );
   }

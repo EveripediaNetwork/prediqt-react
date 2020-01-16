@@ -3,9 +3,11 @@ module.exports = {
   extends: [
     'plugin:react/recommended',
     'plugin:@typescript-eslint/recommended',
+    'prettier',
+    'prettier/react',
     'prettier/@typescript-eslint',
-    'plugin:prettier/recommended',
   ],
+  plugins: ['@typescript-eslint/eslint-plugin', 'prettier'],
   parserOptions: {
     ecmaVersion: 2018,
     sourceType: 'module',
@@ -14,10 +16,12 @@ module.exports = {
     },
   },
   rules: {
+    'prettier/prettier': ['warn'],
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_|^req|^next' }],
+    '@typescript-eslint/camelcase': 'off',
+    '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 0,
-    '@typescript-eslint/explicit-function-return-type': 0,
-    'react/prop-types': 0,
+    'react/prop-types': 0
   },
   settings: {
     react: {
