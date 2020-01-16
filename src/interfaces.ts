@@ -10,6 +10,7 @@ export interface BackgroundImageProps {
 }
 
 export interface LinkToFilterMarketsProps {
+  isRelatedMarkets: boolean;
   param: {
     type: string;
     value: string;
@@ -21,10 +22,11 @@ export interface IconProps {
   size?: number | string;
   height?: number | string;
   width?: number | string;
+  className?: string;
 }
 
 export interface RelatedMarketsProp {
-  relatedMarkets: boolean;
+  isRelatedMarkets: boolean;
 }
 
 interface Volume {
@@ -78,7 +80,7 @@ export interface Market {
   creator: string;
   resolver: string;
   resolution: string;
-  resolutionMarketTime: number;
+  resolutionMarketTime: Nullable<number>;
   ipfs: Ipfs;
   endOfMarketTime: number;
   isActive: boolean;

@@ -2,9 +2,15 @@ import React from 'react';
 
 import { IconProps } from '../../interfaces';
 
-export const ThumbUpIcon: React.FC<IconProps> = ({ size, width, height, ...props }) => {
+export const ThumbUpIcon: React.FC<IconProps> = ({ size, width, height, className }) => {
   return (
-    <svg viewBox="0 0 11 11" {...props} width={size || width} height={size || height} style={{ flexShrink: 0 }}>
+    <svg
+      viewBox="0 0 11 11"
+      className={className}
+      width={size || width}
+      height={size || height}
+      style={{ flexShrink: 0 }}
+    >
       <g id="thumb-up_svg__thumb-up_svg__Page-1" stroke="none" strokeWidth={1} fill="none" fillRule="evenodd">
         <g id="thumb-up_svg__thumb-up_svg__Thumbs-Up-Green-2" fill="#00AD88">
           <g id="thumb-up_svg__thumb-up_svg__Thumbs-Up-Green">

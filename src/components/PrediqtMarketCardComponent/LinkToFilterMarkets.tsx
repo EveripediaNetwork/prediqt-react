@@ -1,41 +1,59 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-import { LinkToFilterMarketsProps } from '../../interfaces';
+import { LinkToFilterMarketsProps, RelatedMarketsProp } from '../../interfaces';
 
-import { PREDIQT_SITE_URL } from '../../constants';
+import { CONTENT_MAX_WIDTH, PREDIQT_SITE_URL } from '../../constants';
 
-const Wrapper = styled.a`
-  display: flex;
+const overflowEllipsis = css`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const Wrapper = styled.a<RelatedMarketsProp>`
+  display: block;
   width: fit-content;
   align-items: center;
   height: 20px;
-  padding: 0 10px;
-  border-radius: 20px;
-  font-weight: 600;
-  letter-spacing: 0.2px;
+  max-width: 100%;
+  padding: 1px 14px;
+  border: 1px solid #ffffff;
+  border-radius: 12px;
+  letter-spacing: 0.24px;
   text-transform: uppercase;
   transition: 0.3s color, 0.3s border-color;
   text-decoration: none;
+  color: #ffffff;
 
-  ${({ theme }) => `
-    font: 10px ${theme.fonts.workSans};
-    border: thin solid ${theme.colors.contextDarkBlue};
-    color: ${theme.colors.contextDarkBlue};
+  ${({ isRelatedMarkets, theme }) => `
+    font: ${isRelatedMarkets ? 12 : 14}px ${theme.fonts.workSans};
     
     &:hover, &:focus {
       color: ${theme.colors.contextMint};
       border-color: ${theme.colors.contextMint};
     }
-  `}
+  `};
+
+  font-weight: 500;
+  ${overflowEllipsis};
+
+  @media (max-width: ${CONTENT_MAX_WIDTH}px) {
+    padding: 2px 14px;
+    font-size: 12px;
+  }
 `;
 
-export const LinkToFilterMarkets: React.FC<LinkToFilterMarketsProps> = function({ param, className }) {
+export const LinkToFilterMarkets: React.FC<LinkToFilterMarketsProps> = function({
+  isRelatedMarkets,
+  param,
+  className,
+}) {
   const { type, value } = param;
   const url = `${PREDIQT_SITE_URL}markets/${type}/${encodeURI(value.toLowerCase())}`;
 
   return (
-    <Wrapper href={url} className={className}>
+    <Wrapper href={url} className={className} isRelatedMarkets={isRelatedMarkets}>
       {value}
     </Wrapper>
   );

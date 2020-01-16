@@ -31,7 +31,7 @@ export async function getMarket(marketId: string): Promise<Market | string> {
       creator: creator.name,
       resolver: resolver.name,
       resolution,
-      resolutionMarketTime: dateToSeconds(resolutionMarketTime),
+      resolutionMarketTime: resolutionMarketTime ? dateToSeconds(resolutionMarketTime) : null,
       ipfs: {
         hash,
         title,

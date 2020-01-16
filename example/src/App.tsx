@@ -14,7 +14,7 @@ class App extends Component {
     return (
       <div>
         <StyledDiv>Example of PredIQt components</StyledDiv>
-        <CardWrapper id="4" />
+        <CardWrapper id="12" />
       </div>
     );
   }

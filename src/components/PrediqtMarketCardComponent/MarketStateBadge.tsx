@@ -1,12 +1,12 @@
 import React from 'react';
 import format from 'date-fns/format';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { checkMarketMatured, checkMarketInvalid } from '../../utils';
 
 import { MarketStateBadgeProps, BadgeProps } from '../../interfaces';
 
-import { ThumbDownIcon } from '../icons';
+import { CircledTickIcon, InvalidIcon, WatchAlertIcon, WatchIcon } from '../icons';
 
 import { CONTENT_MAX_WIDTH } from '../../constants';
 
@@ -14,6 +14,7 @@ const Title = styled.p`
   display: none;
   margin-right: 5px;
   font: 14px ${({ theme }) => theme.fonts.workSans};
+  font-weight: 500;
   text-transform: uppercase;
 
   @media (max-width: ${CONTENT_MAX_WIDTH}px) {
@@ -42,8 +43,8 @@ const Badge = styled.div<BadgeProps>`
     isHovered &&
     `
     width: auto;
-    border-radius: 16px;
     padding: 0 8px;
+    border-radius: 16px;
     
     & ${Title} {
       display: block;
@@ -57,8 +58,8 @@ const Badge = styled.div<BadgeProps>`
 
 const OpenedBadge = styled(Badge)`
   width: auto;
-  border-radius: 15px;
   padding: 0 8px;
+  border-radius: 15px;
 
   & ${Title} {
     display: block;
@@ -69,7 +70,7 @@ const OpenedBadge = styled(Badge)`
   }
 `;
 
-const BadgeIcon = styled(ThumbDownIcon)`
+const iconStyles = css`
   width: 16px;
   height: 16px;
   color: #ffffff;
@@ -80,33 +81,49 @@ const BadgeIcon = styled(ThumbDownIcon)`
   }
 `;
 
+const CircledTick = styled(CircledTickIcon)`
+  ${iconStyles}
+`;
+
+const Invalid = styled(InvalidIcon)`
+  ${iconStyles}
+`;
+
+const WatchAlert = styled(WatchAlertIcon)`
+  ${iconStyles}
+`;
+
+const Watch = styled(WatchIcon)`
+  ${iconStyles}
+`;
+
 export const MarketStateBadge: React.FC<MarketStateBadgeProps> = function({ market, isCardHovered }) {
   let Wrapper = Badge;
   let title;
-  let badgeIconName;
+  let BadgeIcon;
   switch (true) {
     case market.isResolved:
       title = 'resolved';
-      badgeIconName = 'circled-tick';
+      BadgeIcon = CircledTick;
       break;
 
     case checkMarketInvalid(market):
       title = 'invalid';
-      badgeIconName = 'invalid';
+      BadgeIcon = Invalid;
       break;
 
     case checkMarketMatured(market):
       title = 'matured';
-      badgeIconName = 'watch-alert';
+      BadgeIcon = WatchAlert;
       break;
 
     default:
       Wrapper = OpenedBadge;
       title = format(market.endOfMarketTime * 1000, 'd MMM yyyy');
-      badgeIconName = 'watch';
+      BadgeIcon = Watch;
       break;
   }
-  console.log(badgeIconName);
+
   return (
     <Wrapper isHovered={isCardHovered}>
       <Title>{title}</Title>

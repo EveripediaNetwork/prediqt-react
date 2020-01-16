@@ -1,7 +1,8 @@
 import { LimitOrder, Market, Order, OrderBook, ProcessedOrderBook } from './interfaces';
 
-import { EOS_PRECISION } from './constants';
 import { OrderTypes } from './enums';
+
+import { EOS_PRECISION } from './constants';
 
 function sortOrdersDescendingByLimitPrice(currentOrder: Order, nextOrder: Order): number {
   return Number(nextOrder.limit.replace(' EOS', '')) - Number(currentOrder.limit.replace(' EOS', ''));

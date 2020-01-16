@@ -10,40 +10,16 @@ import { ThumbDownIcon, ThumbUpIcon } from '../icons';
 import { MarketStateBadge } from './MarketStateBadge';
 import { LinkToFilterMarkets } from './LinkToFilterMarkets';
 
-import { PREDIQT_SITE_URL } from '../../constants';
-
-const globalStyles = css`
-  &,
-  & * {
-    @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Work+Sans:400,500,600&display=swap');
-
-    ${({ theme }) => `      
-    font-family: ${theme.fonts.openSans}; 
-  `}
-  }
-
-  &,
-  & *,
-  & *::after,
-  & *::before {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    line-height: normal;
-  }
-
-  & div,
-  & p,
-  & section,
-  & article {
-    outline: none;
-  }
-`;
+import { CONTENT_MAX_WIDTH, PREDIQT_SITE_URL } from '../../constants';
 
 const CardLink = styled.a`
-  ${globalStyles};
-
+  display: block;
+  width: 320px;
   text-decoration: none;
+
+  @media (max-width: ${CONTENT_MAX_WIDTH}px) {
+    width: 240px;
+  }
 `;
 
 const BackgroundShadow = styled.div`
@@ -85,70 +61,29 @@ const Card = styled.article<RelatedMarketsProp>`
   &:hover ${BackgroundImage}, &:focus ${BackgroundImage} {
     transform: scale(1.15);
   }
-  ${({ relatedMarkets }) =>
-    relatedMarkets
+  ${({ isRelatedMarkets }) =>
+    isRelatedMarkets
       ? 'height: 338px;'
       : `
        height: 509px;
        
-       @media (max-width: 1124px) {
+       @media (max-width: ${CONTENT_MAX_WIDTH}px) {
          height: 338px;
        }`};
 `;
 
 const CardTitle = styled.h4<RelatedMarketsProp>`
   margin: 18px 0;
-  font-weight: 500;
   line-height: 24px;
 
-  @media (max-width: 1124px) {
+  font: ${({ isRelatedMarkets, theme }) => `${isRelatedMarkets ? 14 : 18}px ${theme.fonts.workSans}`};
+  font-weight: 500;
+
+  @media (max-width: ${CONTENT_MAX_WIDTH}px) {
     max-height: 80px;
     overflow: hidden;
+    font-size: 14px;
   }
-
-  ${({ relatedMarkets, theme }) =>
-    relatedMarkets
-      ? `
-    font: 14px ${theme.fonts.workSans};
-    `
-      : `
-    font: 18px ${theme.fonts.workSans};
-    
-    @media (max-width: 1124px) {
-      font-size: 14px;
-    }
-  `}
-`;
-
-const WrappedLinkToFilterMarkets = styled(LinkToFilterMarkets)<RelatedMarketsProp>`
-  display: block;
-  max-width: 100%;
-  padding: 1px 14px;
-  border: 1px solid #ffffff;
-  border-radius: 12px;
-  font-weight: 500;
-  letter-spacing: 0.24px;
-  color: #ffffff;
-
-  @media (max-width: 1124px) {
-    padding: 2px 14px;
-  }
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  ${({ relatedMarkets, theme }) =>
-    relatedMarkets
-      ? `
-    font: 12px ${theme.fonts.workSans};`
-      : `
-    font: 14px ${theme.fonts.workSans};
-    
-    @media (max-width: 1124px) {
-      font-size: 12px;
-    }
-  `}
 `;
 
 const Divider = styled.hr`
@@ -179,48 +114,33 @@ const NoLine = styled(YesLine)`
 const YesNoText = styled.p<RelatedMarketsProp>`
   margin-left: 5px;
 
+  font-size: ${({ isRelatedMarkets }) => `${isRelatedMarkets ? 12 : 14}px`};
   font-weight: 600;
   letter-spacing: 0.24px;
 
-  ${({ relatedMarkets }) =>
-    relatedMarkets
-      ? `
-      font-size: 12px;
-    `
-      : `
-      font-size: 14px;
-  
-      @media (max-width: 1124px) {
-        font-size: 12px;
-      }
-  `}
+  @media (max-width: ${CONTENT_MAX_WIDTH}px) {
+    font-size: 12px;
+  }
 `;
 
 const Volume = styled.p<RelatedMarketsProp>`
   display: flex;
+  flex-direction: column;
   align-items: flex-end;
 
+  font: ${({ isRelatedMarkets, theme }) => `${isRelatedMarkets ? 12 : 14}px ${theme.fonts.workSans}`};
   font-weight: 500;
   letter-spacing: 0.24px;
   line-height: 14px;
 
-  ${({ relatedMarkets, theme }) =>
-    relatedMarkets
-      ? `
-      font: 12px ${theme.fonts.workSans};
-    `
-      : `
-      font: 14px ${theme.fonts.workSans};
-    
-      @media (max-width: 1124px) {
-        font-size: 12px;
-      }
-    `}
+  @media (max-width: ${CONTENT_MAX_WIDTH}px) {
+    font-size: 12px;
+  }
 `;
 
 const ThumbIconStyles = css<RelatedMarketsProp>`
-  ${({ relatedMarkets }) =>
-    relatedMarkets
+  ${({ isRelatedMarkets }) =>
+    isRelatedMarkets
       ? `
       width: 12px;
       height: 12px;
@@ -229,7 +149,7 @@ const ThumbIconStyles = css<RelatedMarketsProp>`
       width: 14px;
       height: 14px;
 
-      @media (max-width: 1124px) {
+      @media (max-width: ${CONTENT_MAX_WIDTH}px) {
         width: 12px;
         height: 12px;
       }
@@ -250,9 +170,7 @@ const CardContent = styled.div`
 `;
 
 const VolumeText = styled.span`
-  position: absolute;
-  right: 20px;
-  bottom: 45px;
+  margin-bottom: auto;
 `;
 
 const CardIconsWrapper = styled.div`
@@ -308,49 +226,46 @@ export const MarketCard: React.FC<MarketCardProps> = function({ id }) {
   const { imageUrl, title, category } = ipfs;
 
   return (
-    <CardLink href={`${PREDIQT_SITE_URL}market/${id}`} target="_blank">
+    <CardLink className="prediqt-market-card-root-link" href={`${PREDIQT_SITE_URL}market/${id}`} target="_blank">
       <Card
-        relatedMarkets={isRelatedMarkets}
+        isRelatedMarkets={isRelatedMarkets}
         onMouseEnter={setCardHovered}
         onMouseLeave={setCardHovered}
         onFocus={setCardHovered}
         onBlur={setCardHovered}
       >
         <BackgroundImage backgroundURL={imageUrl} />
+        <BackgroundShadow />
         <CardIconsWrapper>
           <MarketStateBadge market={market} isCardHovered={isCardHovered} />
         </CardIconsWrapper>
         <CardContent>
           <object>
-            <WrappedLinkToFilterMarkets
-              relatedMarkets={isRelatedMarkets}
-              param={{ type: 'category', value: category }}
-            />
+            <LinkToFilterMarkets isRelatedMarkets={isRelatedMarkets} param={{ type: 'category', value: category }} />
           </object>
-          <CardTitle relatedMarkets={isRelatedMarkets}>{cutMarketsCardTitle(title)}</CardTitle>
+          <CardTitle isRelatedMarkets={isRelatedMarkets}>{cutMarketsCardTitle(title)}</CardTitle>
           <Divider />
           <Footer>
             <FooterLeft>
               <YesLine>
-                <ThumbDown relatedMarkets={isRelatedMarkets} />
-                <YesNoText relatedMarkets={isRelatedMarkets}>
+                <ThumbDown isRelatedMarkets={isRelatedMarkets} />
+                <YesNoText isRelatedMarkets={isRelatedMarkets}>
                   YES{limitOrder.yesLimitOrderPrice > 0 ? ` – ${limitOrder.yesLimitOrderPrice}x` : ''}
                 </YesNoText>
               </YesLine>
               <NoLine>
-                <ThumbUp relatedMarkets={isRelatedMarkets} />
-                <YesNoText relatedMarkets={isRelatedMarkets}>
+                <ThumbUp isRelatedMarkets={isRelatedMarkets} />
+                <YesNoText isRelatedMarkets={isRelatedMarkets}>
                   NO{limitOrder.noLimitOrderPrice > 0 ? ` – ${limitOrder.noLimitOrderPrice}x` : ''}
                 </YesNoText>
               </NoLine>
             </FooterLeft>
-            <Volume relatedMarkets={isRelatedMarkets}>
+            <Volume isRelatedMarkets={isRelatedMarkets}>
               <VolumeText>Volume</VolumeText>
-              {volume.abbreviatedEos} EOS
+              <span>{volume.abbreviatedEos} EOS</span>
             </Volume>
           </Footer>
         </CardContent>
-        {id}
       </Card>
     </CardLink>
   );
