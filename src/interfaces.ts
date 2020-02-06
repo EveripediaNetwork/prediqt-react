@@ -1,5 +1,5 @@
 import { Nullable } from './types';
-import { OrderTypes, OrderTypesUppercase } from './enums';
+import { LastTradeBarLineColors, OrderTypes, OrderTypesUppercase } from './enums';
 
 export interface MarketCardProps {
   id: string;
@@ -10,11 +10,16 @@ export interface BackgroundImageProps {
 }
 
 export interface LinkToFilterMarketsProps {
-  isRelatedMarkets: boolean;
+  isRelatedMarket: boolean;
   param: {
     type: string;
     value: string;
   };
+  className?: string;
+}
+
+export interface LastTradeBarProps {
+  params: LastTrade;
   className?: string;
 }
 
@@ -25,8 +30,17 @@ export interface IconProps {
   className?: string;
 }
 
-export interface RelatedMarketsProp {
-  isRelatedMarkets: boolean;
+export interface RelatedMarketProp {
+  isRelatedMarket: boolean;
+}
+
+export interface CardTitleProps extends RelatedMarketProp {
+  isLastTradeBar: boolean;
+}
+
+export interface LastTradeBarLineProp {
+  color: LastTradeBarLineColors;
+  transform: number;
 }
 
 interface Volume {
@@ -65,6 +79,11 @@ export interface LimitOrder {
   noLimitOrderPrice: number;
 }
 
+export interface LastTrade {
+  price: number;
+  symbol: string;
+}
+
 export interface Ipfs {
   hash: string;
   title: string;
@@ -88,6 +107,7 @@ export interface Market {
   isVerified: boolean;
   isHidden: boolean;
   limitOrder: LimitOrder;
+  lastTrade: Nullable<LastTrade>;
   volume: Volume;
 }
 

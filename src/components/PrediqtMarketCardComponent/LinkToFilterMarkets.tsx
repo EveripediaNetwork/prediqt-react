@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import { LinkToFilterMarketsProps, RelatedMarketsProp } from '../../interfaces';
+import { LinkToFilterMarketsProps, RelatedMarketProp } from '../../interfaces';
 
 import { CONTENT_MAX_WIDTH, PREDIQT_SITE_URL } from '../../constants';
 
@@ -11,7 +11,7 @@ const overflowEllipsis = css`
   text-overflow: ellipsis;
 `;
 
-const Wrapper = styled.a<RelatedMarketsProp>`
+const Wrapper = styled.a<RelatedMarketProp>`
   display: block;
   width: fit-content;
   align-items: center;
@@ -26,8 +26,8 @@ const Wrapper = styled.a<RelatedMarketsProp>`
   text-decoration: none;
   color: #ffffff;
 
-  ${({ isRelatedMarkets, theme }) => `
-    font: ${isRelatedMarkets ? 12 : 14}px ${theme.fonts.workSans};
+  ${({ isRelatedMarket, theme }) => `
+    font: ${isRelatedMarket ? 12 : 14}px ${theme.fonts.workSans};
     
     &:hover, &:focus {
       color: ${theme.colors.contextMint};
@@ -45,7 +45,7 @@ const Wrapper = styled.a<RelatedMarketsProp>`
 `;
 
 export const LinkToFilterMarkets: React.FC<LinkToFilterMarketsProps> = function({
-  isRelatedMarkets,
+  isRelatedMarket,
   param,
   className,
 }) {
@@ -53,7 +53,7 @@ export const LinkToFilterMarkets: React.FC<LinkToFilterMarketsProps> = function(
   const url = `${PREDIQT_SITE_URL}markets/${type}/${encodeURI(value.toLowerCase())}`;
 
   return (
-    <Wrapper href={url} className={className} isRelatedMarkets={isRelatedMarkets}>
+    <Wrapper href={url} className={className} isRelatedMarket={isRelatedMarket}>
       {value}
     </Wrapper>
   );

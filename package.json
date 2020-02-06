@@ -31,7 +31,7 @@
     "typescript": "^3.7.2"
   },
   "peerDependencies": {
-    "@everipedia/prediqt-js": "^0.0.18",
+    "@everipedia/prediqt-js": "^0.0.23",
     "date-fns": "^2.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",

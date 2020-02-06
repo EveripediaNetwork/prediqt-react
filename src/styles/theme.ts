@@ -8,6 +8,9 @@ export const theme: DefaultTheme = {
     contextBorderGrey: '#dfdfdf',
     contextDarkBlue: '#0d0554',
     contextMint: '#35dac0',
+    contextDarkGrey: '#2d2d2d',
+    yesGreen: '#00ad88',
+    noRed: '#e44f64',
   },
   fonts: {
     openSans: 'Open Sans, Arial, sans-serif',
