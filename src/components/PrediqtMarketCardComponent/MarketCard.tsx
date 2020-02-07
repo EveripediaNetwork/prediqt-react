@@ -4,11 +4,12 @@ import styled, { css } from 'styled-components';
 import { getMarket } from '../../service';
 import { cutMarketsCardTitle } from '../../utils';
 
-import { MarketCardProps, Market, RelatedMarketsProp, BackgroundImageProps } from '../../interfaces';
+import { MarketCardProps, Market, RelatedMarketProp, BackgroundImageProps, CardTitleProps } from '../../interfaces';
 
 import { ThumbDownIcon, ThumbUpIcon } from '../icons';
 import { MarketStateBadge } from './MarketStateBadge';
 import { LinkToFilterMarkets } from './LinkToFilterMarkets';
+import { LastTradeBar } from './LastTradeBar';
 
 import { CONTENT_MAX_WIDTH, PREDIQT_SITE_URL } from '../../constants';
 
@@ -45,7 +46,7 @@ const BackgroundImage = styled(BackgroundShadow)<BackgroundImageProps>`
     backgroundURL ? `background: url('${backgroundURL}') center no-repeat; background-size: cover;` : ''}
 `;
 
-const Card = styled.article<RelatedMarketsProp>`
+const Card = styled.article<RelatedMarketProp>`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -61,8 +62,8 @@ const Card = styled.article<RelatedMarketsProp>`
   &:hover ${BackgroundImage}, &:focus ${BackgroundImage} {
     transform: scale(1.15);
   }
-  ${({ isRelatedMarkets }) =>
-    isRelatedMarkets
+  ${({ isRelatedMarket }) =>
+    isRelatedMarket
       ? 'height: 338px;'
       : `
        height: 509px;
@@ -72,18 +73,30 @@ const Card = styled.article<RelatedMarketsProp>`
        }`};
 `;
 
-const CardTitle = styled.h4<RelatedMarketsProp>`
-  margin: 18px 0;
+const CardTitle = styled.h4<CardTitleProps>`
+  margin: 18px 0 11px;
   line-height: 24px;
-
-  font: ${({ isRelatedMarkets, theme }) => `${isRelatedMarkets ? 14 : 18}px ${theme.fonts.workSans}`};
-  font-weight: 500;
 
   @media (max-width: ${CONTENT_MAX_WIDTH}px) {
     max-height: 80px;
-    overflow: hidden;
     font-size: 14px;
+    overflow: hidden;
+
+    margin: ${({ isLastTradeBar }) => (isLastTradeBar ? '10px 0 5px' : '10px 0')};
   }
+
+  ${({ isLastTradeBar, isRelatedMarket, theme }) =>
+    isRelatedMarket
+      ? `
+      margin: ${isLastTradeBar ? '10px 0 5px' : '10px 0'};
+      font: 14px ${theme.fonts.workSans};
+    `
+      : `
+      ${isLastTradeBar ? '' : 'margin: 18px 0;'}
+      font: 18px ${theme.fonts.workSans};
+  `};
+
+  font-weight: 500;
 `;
 
 const Divider = styled.hr`
@@ -111,10 +124,10 @@ const NoLine = styled(YesLine)`
   margin-top: 5px;
 `;
 
-const YesNoText = styled.p<RelatedMarketsProp>`
+const YesNoText = styled.p<RelatedMarketProp>`
   margin-left: 5px;
 
-  font-size: ${({ isRelatedMarkets }) => `${isRelatedMarkets ? 12 : 14}px`};
+  font-size: ${({ isRelatedMarket }) => `${isRelatedMarket ? 12 : 14}px`};
   font-weight: 600;
   letter-spacing: 0.24px;
 
@@ -123,12 +136,12 @@ const YesNoText = styled.p<RelatedMarketsProp>`
   }
 `;
 
-const Volume = styled.p<RelatedMarketsProp>`
+const Volume = styled.p<RelatedMarketProp>`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 
-  font: ${({ isRelatedMarkets, theme }) => `${isRelatedMarkets ? 12 : 14}px ${theme.fonts.workSans}`};
+  font: ${({ isRelatedMarket, theme }) => `${isRelatedMarket ? 12 : 14}px ${theme.fonts.workSans}`};
   font-weight: 500;
   letter-spacing: 0.24px;
   line-height: 14px;
@@ -138,9 +151,9 @@ const Volume = styled.p<RelatedMarketsProp>`
   }
 `;
 
-const ThumbIconStyles = css<RelatedMarketsProp>`
-  ${({ isRelatedMarkets }) =>
-    isRelatedMarkets
+const ThumbIconStyles = css<RelatedMarketProp>`
+  ${({ isRelatedMarket }) =>
+    isRelatedMarket
       ? `
       width: 12px;
       height: 12px;
@@ -186,7 +199,19 @@ const MarketError = styled.p`
   color: #d00020;
 `;
 
-const isRelatedMarkets = false;
+const WrappedLastTradeBar = styled(LastTradeBar)<RelatedMarketProp>`
+  ${({ isRelatedMarket }) => `
+    padding: ${isRelatedMarket ? 5 : 7}px 0;
+    margin-bottom: ${isRelatedMarket ? 5 : 11}px;
+  `};
+
+  @media (max-width: ${CONTENT_MAX_WIDTH}px) {
+    margin-bottom: 5px;
+    padding: 5px 0;
+  }
+`;
+
+const isRelatedMarket = false;
 
 export const MarketCard: React.FC<MarketCardProps> = function({ id }) {
   const [market, setMarket] = useState<Market | null>(null);
@@ -222,13 +247,15 @@ export const MarketCard: React.FC<MarketCardProps> = function({ id }) {
     return null;
   }
 
-  const { volume, limitOrder, ipfs } = market;
+  const { volume, limitOrder, ipfs, lastTrade } = market;
   const { imageUrl, title, category } = ipfs;
+
+  const isLastTradeBar = Boolean(lastTrade);
 
   return (
     <CardLink className="prediqt-market-card-root-link" href={`${PREDIQT_SITE_URL}market/${id}`} target="_blank">
       <Card
-        isRelatedMarkets={isRelatedMarkets}
+        isRelatedMarket={isRelatedMarket}
         onMouseEnter={setCardHovered}
         onMouseLeave={setCardHovered}
         onFocus={setCardHovered}
@@ -241,26 +268,29 @@ export const MarketCard: React.FC<MarketCardProps> = function({ id }) {
         </CardIconsWrapper>
         <CardContent>
           <object>
-            <LinkToFilterMarkets isRelatedMarkets={isRelatedMarkets} param={{ type: 'category', value: category }} />
+            <LinkToFilterMarkets isRelatedMarket={isRelatedMarket} param={{ type: 'category', value: category }} />
           </object>
-          <CardTitle isRelatedMarkets={isRelatedMarkets}>{cutMarketsCardTitle(title)}</CardTitle>
+          <CardTitle isLastTradeBar={isLastTradeBar} isRelatedMarket={isRelatedMarket}>
+            {cutMarketsCardTitle(title)}
+          </CardTitle>
+          {isLastTradeBar && <WrappedLastTradeBar isRelatedMarket={isRelatedMarket} params={lastTrade} />}
           <Divider />
           <Footer>
             <FooterLeft>
               <YesLine>
-                <ThumbDown isRelatedMarkets={isRelatedMarkets} />
-                <YesNoText isRelatedMarkets={isRelatedMarkets}>
+                <ThumbDown isRelatedMarket={isRelatedMarket} />
+                <YesNoText isRelatedMarket={isRelatedMarket}>
                   YES{limitOrder.yesLimitOrderPrice > 0 ? ` – ${limitOrder.yesLimitOrderPrice}x` : ''}
                 </YesNoText>
               </YesLine>
               <NoLine>
-                <ThumbUp isRelatedMarkets={isRelatedMarkets} />
-                <YesNoText isRelatedMarkets={isRelatedMarkets}>
+                <ThumbUp isRelatedMarket={isRelatedMarket} />
+                <YesNoText isRelatedMarket={isRelatedMarket}>
                   NO{limitOrder.noLimitOrderPrice > 0 ? ` – ${limitOrder.noLimitOrderPrice}x` : ''}
                 </YesNoText>
               </NoLine>
             </FooterLeft>
-            <Volume isRelatedMarkets={isRelatedMarkets}>
+            <Volume isRelatedMarket={isRelatedMarket}>
               <VolumeText>Volume</VolumeText>
               <span>{volume.abbreviatedEos} EOS</span>
             </Volume>

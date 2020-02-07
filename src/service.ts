@@ -23,6 +23,7 @@ export async function getMarket(marketId: string): Promise<Market | string> {
       is_verified: isVerified,
       is_hidden: isHidden,
       order_book: orderBook,
+      last_trade: lastTrade,
       volume,
     } = await apiGraph.getMarket(Number(marketId));
 
@@ -51,6 +52,7 @@ export async function getMarket(marketId: string): Promise<Market | string> {
         eos: volume.eos,
         isTrending: volume.eos >= EOS_PRECISION * 100, // TODO replace with real condition ( > 100 EOS)
       },
+      lastTrade,
       limitOrder: generateYesNoButtons(processOrderBook(orderBook)),
     };
   } catch (error) {

@@ -8,6 +8,9 @@ declare module 'styled-components' {
       contextBorderGrey: string;
       contextDarkBlue: string;
       contextMint: string;
+      contextDarkGrey: string;
+      yesGreen: string;
+      noRed: string;
     };
     fonts: {
       openSans: string;
